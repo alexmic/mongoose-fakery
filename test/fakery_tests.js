@@ -7,7 +7,8 @@
 var assert = require('chai').assert
   , fakery = require('../lib/fakery')
   , mongoose = require('mongoose')
-  , Schema = mongoose.Schema;
+  , Schema = mongoose.Schema
+  , helpers = require('../lib/helpers');
 
 describe('tests fakery.js', function() {
 
@@ -440,6 +441,7 @@ describe('tests fakery.js', function() {
             assert.equal(model.array[0], 1);
             assert.equal(model.array[1], 2);
         });
+
     });
 
     describe('makeAndSave()', function() {
