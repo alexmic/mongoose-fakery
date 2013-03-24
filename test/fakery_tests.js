@@ -10,7 +10,39 @@ var assert = require('chai').assert
   , Schema = mongoose.Schema;
 
 describe('tests fakery.js', function() {
+
+    before(function() {
+        var ComplexSchema = new Schema({
+            str: String,
+            num: Number,
+            array: [],
+            bool: Boolean,
+            boolgen: Boolean,
+            nested: {
+                foo: String,
+                foogen: String
+            }
+        });
+
+        var UserSchema = new Schema({
+            name: String
+        });
+
+        var ProjectSchema = new Schema({
+            name: String,
+            user: {
+                type: Schema.Types.ObjectId,
+                ref: 'User'
+            }
+        });
+
+        mongoose.model('Complex', ComplexSchema);
+        mongoose.model('User', UserSchema);
+        mongoose.model('Project', ProjectSchema);
+    });
+
     describe('g', function() {
+
         it('should expose the predefined data providers', function() {
             assert.isDefined(fakery.g);
             assert.isDefined(fakery.g.str);
@@ -25,9 +57,11 @@ describe('tests fakery.js', function() {
             assert.isDefined(fakery.g.rndbool);
             assert.isDefined(fakery.g.lorem);
         });
+
     });
 
     describe('generator()', function() {
+
         it('should add any new user-defined providers to fakery.g', function() {
             fakery.generator('custom', function() {
                 return 'custom';
@@ -43,48 +77,27 @@ describe('tests fakery.js', function() {
             assert.isFunction(testGenerator);
             assert.equal(testGenerator(), 'test');
         });
+
     });
 
     describe('fake()', function() {
-        before(function() {
-            var PersonSchema = new Schema({
-                name: String
-            });
-            mongoose.model('Person', PersonSchema);
-        });
 
         it('should store a new factory if model and attributes are present', function() {
-            fakery.fake('test', mongoose.model('Person'), {
+            fakery.fake('user', mongoose.model('User'), {
                 name: 'alex'
             });
         });
 
         it('should return a factory if only name is present', function() {
-            var factory = fakery.fake('test');
-            assert.equal(factory.name, 'test');
-            //assert.instanceOf(factory, fakery.Factory);
+            var factory = fakery.fake('user');
+            assert.equal(factory.name, 'user');
         });
     });
 
     describe('make()', function() {
-        before(function() {
-            var TestSchema = new Schema({
-                str: String,
-                num: Number,
-                array: [],
-                bool: Boolean,
-                boolgen: Boolean,
-                nested: {
-                    foo: String,
-                    foogen: String
-                }
-            });
-            mongoose.model('Test', TestSchema);
-        });
 
         it('should make a model without generators', function() {
-            var Test = mongoose.model('Test');
-            fakery.fake('test', Test, {
+            fakery.fake('complex', mongoose.model('Complex'), {
                 str: 'str',
                 num: 5,
                 array: [1],
@@ -96,7 +109,7 @@ describe('tests fakery.js', function() {
                 }
             });
 
-            var model = fakery.make('test');
+            var model = fakery.make('complex');
 
             assert.isDefined(model.str);
             assert.isDefined(model.num);
@@ -112,13 +125,10 @@ describe('tests fakery.js', function() {
             assert.equal(model.array[0], 1);
             assert.equal(model.nested.foo, 'str');
             assert.equal(model.nested.foogen, 'str');
-
-            assert.instanceOf(model, Test);
         });
 
         it('should apply generators', function() {
-            var Test = mongoose.model('Test');
-            fakery.fake('test', Test, {
+            fakery.fake('complex', mongoose.model('Complex'), {
                 str: fakery.g.str(10),
                 num: 5,
                 array: [1],
@@ -130,7 +140,7 @@ describe('tests fakery.js', function() {
                 }
             });
 
-            var model = fakery.make('test');
+            var model = fakery.make('complex');
 
             assert.isDefined(model.str);
             assert.isDefined(model.num);
@@ -146,13 +156,10 @@ describe('tests fakery.js', function() {
             assert.isTrue(model.boolgen === true || model.boolgen === false);
             assert.equal(model.nested.foo, 'str');
             assert.equal(model.nested.foogen, 'str');
-
-            assert.instanceOf(model, Test);
         });
 
         it('should apply generators (one-level nesting)', function() {
-            var Test = mongoose.model('Test');
-            fakery.fake('test', Test, {
+            fakery.fake('complex', mongoose.model('Complex'), {
                 str: fakery.g.str(10),
                 num: 5,
                 array: [1, 2, 3],
@@ -164,7 +171,7 @@ describe('tests fakery.js', function() {
                 }
             });
 
-            var model = fakery.make('test');
+            var model = fakery.make('complex');
 
             assert.isDefined(model.str);
             assert.isDefined(model.num);
@@ -178,13 +185,10 @@ describe('tests fakery.js', function() {
             assert.equal(model.bool, false);
             assert.isTrue(model.boolgen === true || model.boolgen === false);
             assert.lengthOf(model.nested.foogen, 10);
-
-            assert.instanceOf(model, Test);
         });
 
         it('should apply generators (in arrays)', function() {
-            var Test = mongoose.model('Test');
-            fakery.fake('test', Test, {
+            fakery.fake('complex', mongoose.model('Complex'), {
                 str: 'str',
                 num: 5,
                 array: [fakery.g.str(5), fakery.g.str(5)],
@@ -196,7 +200,7 @@ describe('tests fakery.js', function() {
                 }
             });
 
-            var model = fakery.make('test');
+            var model = fakery.make('complex');
 
             assert.isDefined(model.str);
             assert.isDefined(model.num);
@@ -212,13 +216,10 @@ describe('tests fakery.js', function() {
             assert.lengthOf(model.array, 2);
             assert.lengthOf(model.array[0], 5);
             assert.lengthOf(model.array[1], 5);
-
-            assert.instanceOf(model, Test);
         });
 
         it('should apply lazy attributes', function() {
-            var Test = mongoose.model('Test');
-            fakery.fake('test', Test, {
+            fakery.fake('complex', mongoose.model('Complex'), {
                 str: fakery.lazy(function(attrs) {
                     // check that all eager attributes are calculated
                     assert.equal(attrs.num, 5);
@@ -239,7 +240,7 @@ describe('tests fakery.js', function() {
                 }
             });
 
-            var model = fakery.make('test');
+            var model = fakery.make('complex');
 
             assert.isDefined(model.str);
             assert.isDefined(model.num);
@@ -255,13 +256,10 @@ describe('tests fakery.js', function() {
             assert.equal(model.array[0], 1);
             assert.equal(model.nested.foo, 'str');
             assert.equal(model.nested.foogen, 'str');
-
-            assert.instanceOf(model, Test);
         });
 
         it('should apply lazy attributes (one-level nesting)', function() {
-            var Test = mongoose.model('Test');
-            fakery.fake('test', Test, {
+            fakery.fake('complex', mongoose.model('Complex'), {
                 str: 'str',
                 num: 5,
                 array: [1],
@@ -281,7 +279,7 @@ describe('tests fakery.js', function() {
                 }
             });
 
-            var model = fakery.make('test');
+            var model = fakery.make('complex');
 
             assert.isDefined(model.str);
             assert.isDefined(model.num);
@@ -297,13 +295,10 @@ describe('tests fakery.js', function() {
             assert.equal(model.array[0], 1);
             assert.equal(model.nested.foo, 'str5');
             assert.equal(model.nested.foogen, 'str');
-
-            assert.instanceOf(model, Test);
         });
 
         it('should apply lazy attributes (in arrays)', function() {
-            var Test = mongoose.model('Test')
-              , strlazy = function(attrs) {
+            var strlazy = function(attrs) {
                     assert.equal(attrs.str, 'str');
                     assert.equal(attrs.num, 5);
                     assert.equal(attrs.bool, false);
@@ -322,7 +317,7 @@ describe('tests fakery.js', function() {
                     return attrs.num;
                 };
 
-            fakery.fake('test', Test, {
+            fakery.fake('complex', mongoose.model('Complex'), {
                 str: 'str',
                 num: 5,
                 array: [fakery.lazy(strlazy), fakery.lazy(numlazy)],
@@ -334,7 +329,7 @@ describe('tests fakery.js', function() {
                 }
             });
 
-            var model = fakery.make('test');
+            var model = fakery.make('complex');
 
             assert.isDefined(model.str);
             assert.isDefined(model.num);
@@ -351,13 +346,10 @@ describe('tests fakery.js', function() {
             assert.equal(model.array[1], 5);
             assert.equal(model.nested.foo, 'str');
             assert.equal(model.nested.foogen, 'str');
-
-            assert.instanceOf(model, Test);
         });
 
         it('should not affect the model if any fake attributes do not exist on the model', function() {
-            var Test = mongoose.model('Test');
-            fakery.fake('test', Test, {
+            fakery.fake('complex', mongoose.model('Complex'), {
                 str: fakery.g.name(),
                 num: 5,
                 array: [1, 2],
@@ -370,7 +362,7 @@ describe('tests fakery.js', function() {
                 nonexisting: fakery.g.str(15)
             });
 
-            var model = fakery.make('test');
+            var model = fakery.make('complex');
 
             assert.isDefined(model.str);
             assert.isDefined(model.num);
@@ -378,15 +370,11 @@ describe('tests fakery.js', function() {
             assert.isDefined(model.bool);
             assert.isDefined(model.boolgen);
             assert.isDefined(model.nested);
-
             assert.isUndefined(model.nonexisting);
-
-            assert.instanceOf(model, Test);
         });
 
         it('should apply overrides', function() {
-            var Test = mongoose.model('Test');
-            fakery.fake('test', Test, {
+            fakery.fake('complex', mongoose.model('Complex'), {
                 str: fakery.g.name(),
                 num: fakery.g.rndint(),
                 array: [fakery.g.str(5), fakery.g.str(5)],
@@ -398,7 +386,7 @@ describe('tests fakery.js', function() {
                 }
             });
 
-            var model = fakery.make('test', {
+            var model = fakery.make('complex', {
                 str: 'str',
                 num: 5,
                 array: [1, 2],
@@ -417,8 +405,40 @@ describe('tests fakery.js', function() {
             assert.equal(model.boolgen, true);
             assert.equal(model.array[0], 1);
             assert.equal(model.array[1], 2);
+        });
 
-            assert.instanceOf(model, Test);
+        it('should apply overrides', function() {
+            fakery.fake('complex', mongoose.model('Complex'), {
+                str: fakery.g.name(),
+                num: fakery.g.rndint(),
+                array: [fakery.g.str(5), fakery.g.str(5)],
+                bool: false,
+                boolgen: fakery.g.rndbool(),
+                nested: {
+                    foo: 'str',
+                    foogen: 'str'
+                }
+            });
+
+            var model = fakery.make('complex', {
+                str: 'str',
+                num: 5,
+                array: [1, 2],
+                boolgen: true
+            });
+
+            assert.isDefined(model.str);
+            assert.isDefined(model.num);
+            assert.isDefined(model.array);
+            assert.isDefined(model.bool);
+            assert.isDefined(model.boolgen);
+            assert.isDefined(model.nested);
+
+            assert.equal(model.str, 'str');
+            assert.equal(model.num, 5);
+            assert.equal(model.boolgen, true);
+            assert.equal(model.array[0], 1);
+            assert.equal(model.array[1], 2);
         });
     });
 
@@ -426,15 +446,14 @@ describe('tests fakery.js', function() {
 
         before(function() {
             // Mock the save() method on the Mongoose model
-            var Test = mongoose.model('Test');
-            Test.prototype.save = function(done) {
+            var Complex = mongoose.model('Complex');
+            Complex.prototype.save = function(done) {
                 this._called = true;
                 done(null, this);
             };
         });
 
         it('should make and save a model without overrides', function(done) {
-            var Test = mongoose.model('Test');
             var spec = {
                 str: fakery.g.name(),
                 num: fakery.g.rndint(),
@@ -447,16 +466,15 @@ describe('tests fakery.js', function() {
                 }
             };
 
-            fakery.fake('test', Test, spec);
+            fakery.fake('complex', mongoose.model('Complex'), spec);
 
-            fakery.makeAndSave('test', function(err, test) {
-                assert.isTrue(test._called);
+            fakery.makeAndSave('complex', function(err, complex) {
+                assert.isTrue(complex._called);
                 done();
             });
         });
 
         it('should make and save a model with overrides', function(done) {
-            var Test = mongoose.model('Test');
             var spec = {
                 str: fakery.g.name(),
                 num: fakery.g.rndint(),
@@ -468,21 +486,23 @@ describe('tests fakery.js', function() {
                     foogen: 'str'
                 }
             };
+
             var overrides = {
                 str: 'str',
                 num: 5,
                 array: [1]
             };
 
-            fakery.fake('test', Test, spec);
+            fakery.fake('complex', mongoose.model('Complex'), spec);
 
-            fakery.makeAndSave('test', overrides, function(err, test) {
-                assert.equal(test.str, 'str');
-                assert.equal(test.num, 5);
-                assert.equal(test.array[0], 1);
-                assert.isTrue(test._called);
+            fakery.makeAndSave('complex', overrides, function(err, complex) {
+                assert.equal(complex.str, 'str');
+                assert.equal(complex.num, 5);
+                assert.equal(complex.array[0], 1);
+                assert.isTrue(complex._called);
                 done();
             });
         });
+
     });
 });
