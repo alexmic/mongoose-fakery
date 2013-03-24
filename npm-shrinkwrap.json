@@ -1,0 +1,106 @@
+{
+  "name": "mongoose-fakery",
+  "version": "0.0.1",
+  "dependencies": {
+    "mongoose": {
+      "version": "3.6.0",
+      "from": "mongoose@",
+      "resolved": "https://registry.npmjs.org/mongoose/-/mongoose-3.6.0.tgz",
+      "dependencies": {
+        "hooks": {
+          "version": "0.2.1",
+          "from": "hooks@0.2.1",
+          "resolved": "https://registry.npmjs.org/hooks/-/hooks-0.2.1.tgz"
+        },
+        "mongodb": {
+          "version": "1.2.14",
+          "from": "mongodb@1.2.14",
+          "resolved": "https://registry.npmjs.org/mongodb/-/mongodb-1.2.14.tgz",
+          "dependencies": {
+            "bson": {
+              "version": "0.1.8",
+              "from": "bson@0.1.8",
+              "resolved": "https://registry.npmjs.org/bson/-/bson-0.1.8.tgz"
+            }
+          }
+        },
+        "ms": {
+          "version": "0.1.0",
+          "from": "ms@0.1.0",
+          "resolved": "https://registry.npmjs.org/ms/-/ms-0.1.0.tgz"
+        },
+        "sliced": {
+          "version": "0.0.3",
+          "from": "sliced@0.0.3",
+          "resolved": "https://registry.npmjs.org/sliced/-/sliced-0.0.3.tgz"
+        },
+        "muri": {
+          "version": "0.3.1",
+          "from": "muri@0.3.1",
+          "resolved": "https://registry.npmjs.org/muri/-/muri-0.3.1.tgz"
+        },
+        "mpromise": {
+          "version": "0.2.1",
+          "from": "mpromise@0.2.1",
+          "resolved": "https://registry.npmjs.org/mpromise/-/mpromise-0.2.1.tgz",
+          "dependencies": {
+            "sliced": {
+              "version": "0.0.4",
+              "from": "sliced@0.0.4",
+              "resolved": "https://registry.npmjs.org/sliced/-/sliced-0.0.4.tgz"
+            }
+          }
+        },
+        "mpath": {
+          "version": "0.1.1",
+          "from": "mpath@0.1.1",
+          "resolved": "https://registry.npmjs.org/mpath/-/mpath-0.1.1.tgz"
+        }
+      }
+    },
+    "chai": {
+      "version": "1.5.0",
+      "from": "chai@"
+    },
+    "mocha": {
+      "version": "1.8.2",
+      "from": "mocha@",
+      "dependencies": {
+        "commander": {
+          "version": "0.6.1",
+          "from": "commander@0.6.1"
+        },
+        "growl": {
+          "version": "1.7.0",
+          "from": "growl@1.7.x"
+        },
+        "jade": {
+          "version": "0.26.3",
+          "from": "jade@0.26.3",
+          "dependencies": {
+            "mkdirp": {
+              "version": "0.3.0",
+              "from": "mkdirp@0.3.0"
+            }
+          }
+        },
+        "diff": {
+          "version": "1.0.2",
+          "from": "diff@1.0.2"
+        },
+        "debug": {
+          "version": "0.7.2",
+          "from": "debug@*"
+        },
+        "mkdirp": {
+          "version": "0.3.3",
+          "from": "mkdirp@0.3.3"
+        },
+        "ms": {
+          "version": "0.3.0",
+          "from": "ms@0.3.0"
+        }
+      }
+    }
+  }
+}
