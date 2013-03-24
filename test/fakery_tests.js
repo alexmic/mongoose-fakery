@@ -422,67 +422,67 @@ describe('tests fakery.js', function() {
         });
     });
 
-    // describe('makeAndSave()', function() {
-    //     it('should make and save a model without overrides', function(done) {
-    //         var Test = mongoose.model('Test');
-    //         var spec = {
-    //             str: fakery.g.name(),
-    //             num: fakery.g.rndint(),
-    //             array: [fakery.g.str(5), fakery.g.str(5)],
-    //             bool: false,
-    //             boolgen: fakery.g.rndbool(),
-    //             nested: {
-    //                 foo: 'str',
-    //                 foogen: 'str'
-    //             }
-    //         };
+    describe('makeAndSave()', function() {
 
-    //         fakery.fake('test', Test, spec);
+        before(function() {
+            // Mock the save() method on the Mongoose model
+            var Test = mongoose.model('Test');
+            Test.prototype.save = function(done) {
+                this._called = true;
+                done(null, this);
+            };
+        });
 
-    //         fakery.makeAndSave('test', function(err, test) {
-    //             if (err) throw err;
-    //             assert.instanceOf(test, Test);
-    //             Test.findOne({_id: test._id}, function(err, test) {
-    //                 if (err) throw err;
-    //                 assert.isNotNull(test);
-    //                 done();
-    //             });
-    //         });
-    //     });
+        it('should make and save a model without overrides', function(done) {
+            var Test = mongoose.model('Test');
+            var spec = {
+                str: fakery.g.name(),
+                num: fakery.g.rndint(),
+                array: [fakery.g.str(5), fakery.g.str(5)],
+                bool: false,
+                boolgen: fakery.g.rndbool(),
+                nested: {
+                    foo: 'str',
+                    foogen: 'str'
+                }
+            };
 
-    //     it('should make and save a model with overrides', function(done) {
-    //         var Test = mongoose.model('Test');
-    //         var spec = {
-    //             str: fakery.g.name(),
-    //             num: fakery.g.rndint(),
-    //             array: [fakery.g.str(5), fakery.g.str(5)],
-    //             bool: false,
-    //             boolgen: fakery.g.rndbool(),
-    //             nested: {
-    //                 foo: 'str',
-    //                 foogen: 'str'
-    //             }
-    //         };
-    //         var overrides = {
-    //             str: 'str',
-    //             num: 5,
-    //             array: [1]
-    //         };
+            fakery.fake('test', Test, spec);
 
-    //         fakery.fake('test', Test, spec);
+            fakery.makeAndSave('test', function(err, test) {
+                assert.isTrue(test._called);
+                done();
+            });
+        });
 
-    //         fakery.makeAndSave('test', overrides, function(err, test) {
-    //             if (err) throw err;
-    //             assert.instanceOf(test, Test);
-    //             Test.findOne({_id: test._id}, function(err, test) {
-    //                 if (err) throw err;
-    //                 assert.equal(test.str, 'str');
-    //                 assert.equal(test.num, 5);
-    //                 assert.equal(test.array[0], 1);
-    //                 assert.isNotNull(test);
-    //                 done();
-    //             });
-    //         });
-    //     });
-    // });
+        it('should make and save a model with overrides', function(done) {
+            var Test = mongoose.model('Test');
+            var spec = {
+                str: fakery.g.name(),
+                num: fakery.g.rndint(),
+                array: [fakery.g.str(5), fakery.g.str(5)],
+                bool: false,
+                boolgen: fakery.g.rndbool(),
+                nested: {
+                    foo: 'str',
+                    foogen: 'str'
+                }
+            };
+            var overrides = {
+                str: 'str',
+                num: 5,
+                array: [1]
+            };
+
+            fakery.fake('test', Test, spec);
+
+            fakery.makeAndSave('test', overrides, function(err, test) {
+                assert.equal(test.str, 'str');
+                assert.equal(test.num, 5);
+                assert.equal(test.array[0], 1);
+                assert.isTrue(test._called);
+                done();
+            });
+        });
+    });
 });
