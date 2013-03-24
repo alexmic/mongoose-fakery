@@ -31,22 +31,35 @@ MIT.
 
 ## Documentation
 
-### Creating a fakery (factory)
+### Installing
 
 ```js
-// in your models.js
+npm install mongoose-fakery
+```
+
+### Creating a fakery (factory)
+
+In your `models.js`:
+```js
+var mongoose = require('mongoose')
+  , Schema = mongoose.Schema;
+
 var UserSchema = new Schema({
     name: String,
     surname: String
 });
-mongoose.model('User', UserSchema);
 
-// in your tests or fixture files
+mongoose.model('User', UserSchema);
+```
+
+In your tests or fixture files:
+```js
+var fakery = require('mongoose-fakery');
+
 fakery.fake('user', mongoose.model('User'), {
     name: 'john',
     surname: 'doe'
 });
-
 ```
 
 ### Getting a fakery
@@ -59,6 +72,42 @@ var userFakery = fakery.fake('user');
 ```
 
 ### Using data generators
+
+Data generators are functions that return data. That data can be random or follow
+specific patterns. `mongoose-fakery` comes with a number of pre-defined data generators
+which will probably suit most of your needs i.e
+
+1. random strings (hex, alpha, alphanum)
+2. random numbers
+3. random booleans (true/false)
+4. lorem generator
+5. name, surname and gender
+6. picking random items from lists
+
+```js
+// using the user model defined above
+fakery.fake('user', mongoose.model('User'), {
+    name: fakery.g.name(),
+    surname: fakery.g.surname()
+});
+```
+
+Pre-defined data generators are exposed under the `g` attribute of the `fakery`
+object. Take a look in `data_providers.js` to see all the available generators
+and their APIs.
+
+Data generators can also be used when you just want to generate a bunch of random
+data for whatever purpose. They are not specific to test factories:
+
+```js
+var fakery = require('mongoose-fakery');
+
+// generate 10 random full names
+var names = [], i;
+for (i = 0; i < 10; i++) {
+    names.push(fakery.g.fullName());
+}
+```
 
 ### Creating custom data generators
 
