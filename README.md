@@ -13,7 +13,6 @@ Thanks.
 
 ## Contributing
 
-To contribute:
 1. Clone the repo.
 2. Create a branch.
 3. Write awesome code.
@@ -33,6 +32,31 @@ MIT.
 ## Documentation
 
 ### Creating a fakery (factory)
+
+```js
+// in your models.js
+var UserSchema = new Schema({
+    name: String,
+    surname: String
+});
+mongoose.model('User', UserSchema);
+
+// in your tests or fixture files
+fakery.fake('user', mongoose.model('User'), {
+    name: 'john',
+    surname: 'doe'
+});
+
+```
+
+### Getting a fakery
+
+If the only argument you pass into `fake()` is the name of the factory then
+the method becomes a getter.
+
+```js
+var userFakery = fakery.fake('user');
+```
 
 ### Using data generators
 
