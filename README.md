@@ -1,5 +1,7 @@
 # mongoose-fakery
 
+# NOT READY FOR PRIMETIME YET
+
 `mongoose-fakery` provides an easy fixture replacement method and random data generators.
 
 ## Inspiration
