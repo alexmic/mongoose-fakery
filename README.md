@@ -28,6 +28,7 @@ MIT.
 
 1. Associations with other models. This is my first priority.
 2. Browser compatibility.
+3. Add more data generators.
 
 ## Documentation
 
@@ -166,11 +167,19 @@ fakery.generator('timesTwo', function(n) {
     return n*2;
 });
 
-// use like this
 var timesTwo = fakery.g.timesTwo();
 timesTwo(2); // returns 4
 ```
 
 ### Making a fake model
+
+To make a fake model, use the `make()` method. `make()` can also receive overrides.
+
+```js
+var model = fakery.make('user');
+var modelWithOverrides = fakery.make('user', {
+    name: 'override'
+});
+```
 
 ### Making & saving a fake model
