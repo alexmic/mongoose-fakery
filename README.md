@@ -71,6 +71,27 @@ the method becomes a getter.
 var userFakery = fakery.fake('user');
 ```
 
+### Lazy attributes
+
+'Lazy' attributes are attributes that are resolved during a 'second' pass over
+the attributes of the fakery. Common usage are attributes that depend
+on other attributes for their value.
+
+To create a 'lazy' attribute use `fakery.lazy()`:
+```js
+fakery.fake('user', mongoose.model('User'), {
+    name: 'john',
+    surname: 'doe',
+    email: fakery.lazy(function(attrs) {
+        // this will return john@example.com
+        return attrs.name + '@example.com';
+    });
+});
+```
+
+Each lazy attribute receives all the resolved attributes of the first pass as
+the only parameter.
+
 ### Using data generators
 
 Data generators are functions that return data. That data can be random or follow
@@ -89,6 +110,17 @@ which will probably suit most of your needs i.e
 fakery.fake('user', mongoose.model('User'), {
     name: fakery.g.name(),
     surname: fakery.g.surname()
+});
+```
+
+Generators can also be used in arrays and nested attributes:
+
+```js
+// this
+fakery.fake('post', mongoose.model('Post'), {
+    name: fakery.g.name(),
+    // this will create tags 'projects', <random string>, 'tech'
+    tags: ['projects', fakery.g.str(5), 'tech']
 });
 ```
 
