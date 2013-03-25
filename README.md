@@ -96,7 +96,7 @@ the only parameter.
 
 Data generators are functions that return data. That data can be random or follow
 specific patterns. `mongoose-fakery` comes with a number of pre-defined data generators
-which will probably suit most of your needs i.e
+which will probably suit most of your needs i.e:
 
 1. random strings (hex, alpha, alphanum)
 2. random numbers
@@ -104,6 +104,12 @@ which will probably suit most of your needs i.e
 4. lorem generator
 5. name, surname and gender
 6. picking random items from lists
+
+Pre-defined data generators are exposed under the `g` attribute of the `fakery`
+object. Take a look in `data_providers.js` to see all the available generators
+and their APIs.
+
+Some examples:
 
 ```js
 // using the user model defined above
@@ -116,17 +122,12 @@ fakery.fake('user', mongoose.model('User'), {
 Generators can also be used in arrays and nested attributes:
 
 ```js
-// this
 fakery.fake('post', mongoose.model('Post'), {
     name: fakery.g.name(),
     // this will create tags 'projects', <random string>, 'tech'
     tags: ['projects', fakery.g.str(5), 'tech']
 });
 ```
-
-Pre-defined data generators are exposed under the `g` attribute of the `fakery`
-object. Take a look in `data_providers.js` to see all the available generators
-and their APIs.
 
 Data generators can also be used when you just want to generate a bunch of random
 data for whatever purpose. They are not specific to test factories:
@@ -142,6 +143,33 @@ for (i = 0; i < 10; i++) {
 ```
 
 ### Creating custom data generators
+
+`mongoose-fakery` gives you the option to create custom generators that attach
+themselves to the `g` attribute to the `fakery` object:
+
+```js
+// declare like this
+fakery.generator('custom', function() {
+    return 'custom';
+});
+
+// use like this
+var customGenerator = fakery.g.custom();
+customGenerator(); // returns 'custom'
+```
+
+As you might have guessed, generators wrap 'data provider' methods in a function.
+You can thus do things like:
+
+```js
+fakery.generator('timesTwo', function(n) {
+    return n*2;
+});
+
+// use like this
+var timesTwo = fakery.g.timesTwo();
+timesTwo(2); // returns 4
+```
 
 ### Making a fake model
 
