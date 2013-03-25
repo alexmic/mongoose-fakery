@@ -182,4 +182,18 @@ var modelWithOverrides = fakery.make('user', {
 });
 ```
 
+Note that the model is *not* saved to the database.
+
 ### Making & saving a fake model
+
+To make and save a fake model, use the `makeAndSave()` method.
+
+```js
+fakery.makeAndSave('user', function(err, user) {
+    // `user` is saved to the database at this point
+});
+
+fakery.makeAndSave('user', {name: 'override'}, function(err, user) {
+    // `user` is saved to the database and name is overriden to 'override'.
+});
+```
