@@ -23,10 +23,8 @@
   "author": "Alex Michael",
   "license": "MIT",
   "devDependencies": {
-    "chai": "~1.5.0",
-    "mocha": "~1.8.2"
-  },
-  "dependencies": {
-    "mongoose": "~3.6.0"
+    "chai": "1.5.x",
+    "mocha": "1.8.x",
+    "mongoose": "3.6.0"
   }
 }
