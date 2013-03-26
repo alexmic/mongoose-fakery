@@ -1,6 +1,6 @@
 {
   "name": "mongoose-fakery",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Fixtures replacement and random data generator for mongoose.",
   "main": "index.js",
   "scripts": {
