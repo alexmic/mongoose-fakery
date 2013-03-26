@@ -2,4 +2,4 @@
 =            ROOT SHORTCUTS            =
 ======================================*/
 
-module.exports = require('./fakery');
+module.exports = require('./lib/fakery');
