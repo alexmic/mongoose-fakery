@@ -1,7 +1,5 @@
 # mongoose-fakery
 
-# NOT READY FOR PRIMETIME YET
-
 `mongoose-fakery` provides an easy fixture replacement method and random data generators.
 
 ## Inspiration
@@ -20,7 +18,7 @@ Thanks.
 3. Write awesome code.
 4. Add tests for your changes. Test dependencies are defined in `package.json`.
 5. Open a Pull Request.
-6. Receive a 'Thanks!' and possibly a digital beer from me.
+6. Receive a 'Thank you!' and possibly a digital beer from me.
 
 ## License
 
