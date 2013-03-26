@@ -141,7 +141,7 @@ var fakery = require('mongoose-fakery');
 // generate 10 random full names
 var names = [], i;
 for (i = 0; i < 10; i++) {
-    names.push(fakery.g.fullName());
+    names.push(fakery.g.fullname());
 }
 ```
 
